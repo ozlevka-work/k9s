@@ -1,28 +1,20 @@
-# -----------------------------------------------------------------------------
-# The base image for building the k9s binary
+FROM python:3-alpine3.12
 
-FROM golang:1.15.2-alpine3.12 AS build
-
-WORKDIR /k9s
-COPY go.mod go.sum main.go Makefile ./
-COPY internal internal
-COPY cmd cmd
-RUN apk --no-cache add make git gcc libc-dev curl && make build
-
-# -----------------------------------------------------------------------------
-# Build the final Docker image
-
-
-FROM python:3-alpine3.12 
 ARG KUBECTL_VERSION="v1.18.2"
+ARG K9S_VERSION="v0.24.7"
 
-COPY --from=build /k9s/execs/k9s /bin/k9s
+
 RUN apk add --update ca-certificates \
-  && apk add --update -t deps curl vim \
+  && apk add --update -t deps curl vim tar \
   && curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
   && chmod +x /usr/local/bin/kubectl \
+  && curl -L -o k9s.tar.gz https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_x86_64.tar.gz \
+  && tar xvfz k9s.tar.gz \
+  && mv ./k9s /bin/k9s \
+  && rm -f k9s.tar.gz \
   && apk del --purge deps \
   && rm /var/cache/apk/* \
   && pip install awscli
 
-# ENTRYPOINT [ "/bin/k9s" ]
+
+
