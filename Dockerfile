@@ -13,8 +13,6 @@ RUN apk add --update ca-certificates \
   && mv ./k9s /bin/k9s \
   && rm -f k9s.tar.gz \
   && apk del --purge deps \
-  && rm /var/cache/apk/* \
-  && pip install awscli
-
+  && rm /var/cache/apk/*
 
 

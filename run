@@ -1,0 +1,6 @@
+#!/bin/bash 
+
+
+ docker run -it --rm \
+    -v $HOME/.kube:/root/.kube \
+    ghcr.io/ozlevka-work/k9s:doversion-01 /bin/k9s
