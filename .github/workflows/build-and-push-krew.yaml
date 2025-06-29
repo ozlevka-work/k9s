@@ -1,4 +1,4 @@
-name: Build k9s docker image
+name: Build k9s and krew docker image
 
 on:
   workflow_dispatch:
