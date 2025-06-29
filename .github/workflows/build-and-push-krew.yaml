@@ -1,0 +1,41 @@
+name: Build k9s docker image
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Name of the docker tag to create.'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup QUEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR.IO
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image to GHCR
+        uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_SUMMARY: false
+        with:
+          context: ./krew
+          file: ./krew/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          provenance: false
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: ghcr.io/${{ github.repository_owner }}/k9s:${{ inputs.tag }}-krew
