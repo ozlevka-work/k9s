@@ -1,4 +1,4 @@
-FROM  ghcr.io/ozlevka-work/k9s:v0.50.6
+FROM  ghcr.io/ozlevka-work/k9s:v0.50.9
 
 ARG KREW_VERSION="v0.4.5"
 
