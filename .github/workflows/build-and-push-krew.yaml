@@ -1,4 +1,4 @@
-name: Build k9s docker image
+name: Build k9s and krew docker image
 
 on:
   workflow_dispatch:
@@ -31,11 +31,11 @@ jobs:
         env:
           DOCKER_BUILD_SUMMARY: false
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./krew
+          file: ./krew/Dockerfile
           platforms: linux/amd64,linux/arm64
           provenance: false
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: ghcr.io/${{ github.repository_owner }}/k9s:${{ inputs.tag }}
+          tags: ghcr.io/${{ github.repository_owner }}/k9s:${{ inputs.tag }}-krew
